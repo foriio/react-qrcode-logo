@@ -13,6 +13,7 @@ export interface IProps {
     logoOpacity?: number;
     qrStyle?: 'squares' | 'dots';
     style?: object;
+    circleLogo?: boolean;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;

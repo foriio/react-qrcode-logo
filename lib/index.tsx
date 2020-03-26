@@ -17,6 +17,7 @@ export interface IProps {
     logoOpacity?: number;
     qrStyle?: 'squares' | 'dots';
     style?: object;
+    circleLogo?: boolean;
 }
 
 export class QRCode extends React.Component<IProps, {}> {
@@ -32,7 +33,8 @@ export class QRCode extends React.Component<IProps, {}> {
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
-        qrStyle: 'squares'
+        qrStyle: 'squares',
+        circleLogo: false,
     };
 
     private static utf16to8(str: string): string {
@@ -104,7 +106,8 @@ export class QRCode extends React.Component<IProps, {}> {
             logoWidth,
             logoHeight,
             logoOpacity,
-            qrStyle
+            qrStyle,
+            circleLogo,
         } = this.props;
 
         const qrCode = qrGenerator(0, ecLevel);
@@ -168,15 +171,32 @@ export class QRCode extends React.Component<IProps, {}> {
                 image.crossOrigin = 'Anonymous';
             }
             image.onload = () => {
-                const dwidth = logoWidth || size * 0.2;
-                const dheight = logoHeight || dwidth;
-                const dx = (size - dwidth) / 2;
-                const dy = (size - dheight) / 2;
+                var dwidth = logoWidth || size * 0.2;
+                var dheight = logoHeight || dwidth;
+                var dx = (size - dwidth) / 2;
+                var dy = (size - dheight) / 2
+                var extraOffsetForCircle = circleLogo ? 5 : 0;
                 image.width = dwidth;
                 image.height = dheight;
                 ctx.save();
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image, dx + offset, dy + offset, dwidth, dheight);
+                if (circleLogo) {
+                    var circleX = canvasSize / 2 + 5;
+                    var circleY = canvasSize / 2 + 5;
+                    var circleRadius = dwidth / 2;
+                    ctx.beginPath();
+                    ctx.arc(circleX, circleY, circleRadius + 5, 0, 2 * Math.PI);
+                    ctx.clip();
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
+                    ctx.clip();
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                }
+                ctx.drawImage(image, dx + offset + extraOffsetForCircle, dy + offset + extraOffsetForCircle, dwidth, dheight);
+            
                 ctx.restore();
             };
             image.src = logoImage;

@@ -72,7 +72,7 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, qrStyle = _a.qrStyle;
+        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, qrStyle = _a.qrStyle, circleLogo = _a.circleLogo;
         var qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
@@ -126,11 +126,27 @@ var QRCode = /** @class */ (function (_super) {
                 var dheight = logoHeight || dwidth;
                 var dx = (size - dwidth) / 2;
                 var dy = (size - dheight) / 2;
+                var extraOffsetForCircle = circleLogo ? 5 : 0;
                 image_1.width = dwidth;
                 image_1.height = dheight;
                 ctx.save();
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image_1, dx + offset, dy + offset, dwidth, dheight);
+                if (circleLogo) {
+                    var circleX = canvasSize / 2 + 5;
+                    var circleY = canvasSize / 2 + 5;
+                    var circleRadius = dwidth / 2;
+                    ctx.beginPath();
+                    ctx.arc(circleX, circleY, circleRadius + 5, 0, 2 * Math.PI);
+                    ctx.clip();
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
+                    ctx.clip();
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                }
+                ctx.drawImage(image_1, dx + offset + extraOffsetForCircle, dy + offset + extraOffsetForCircle, dwidth, dheight);
                 ctx.restore();
             };
             image_1.src = logoImage;
@@ -155,7 +171,8 @@ var QRCode = /** @class */ (function (_super) {
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
-        qrStyle: 'squares'
+        qrStyle: 'squares',
+        circleLogo: false,
     };
     return QRCode;
 }(React.Component));

@@ -38,6 +38,7 @@ React.render(
 | `logoWidth`   | `number` (in pixels)                    | `size * 0.2`           | Logo image width |
 | `logoHeight`  | `number` (in pixels)                    | `logoWidth`                     | Logo image height |
 | `logoOpacity` | `number` (css opacity 0 <= x <= 1)      | `1`                    | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code |
+| `circleLogo` | `boolean` | `false`  | Render logo image in circle |
 | `qrStyle` | `squares` &#124; `dots` | `squares`  | Style of the QR Code modules |
 
 ## Example 
